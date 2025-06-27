@@ -1,0 +1,43 @@
+[project]
+name = "jxesm2"
+version = "0.1.0"
+description = "Flax NNX re-implementation of the protein language model ESM-2"
+readme = "README.md"
+authors = [
+    { name = "Lucas van Dijk", email = "info@lucasvandijk.nl" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "flax>=0.10.6",
+    "jax>=0.6",
+    "optax>=0.2.4",
+]
+
+[project.optional-dependencies]
+cuda12 = [
+    "jax[cuda12]>=0.6"
+]
+
+cuda12-local = [
+    "jax[cuda12-local]>=0.6",
+]
+
+metal = [
+    "jax-metal>=0.1"
+]
+
+tpu = [
+    "jax[tpu]>=0.6",
+]
+
+[project.scripts]
+jxesm2 = "jxesm2:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+]
