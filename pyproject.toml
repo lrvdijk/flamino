@@ -1,7 +1,7 @@
 [project]
-name = "jxesm2"
+name = "flaxseed"
 version = "0.1.0"
-description = "Flax NNX re-implementation of the protein language model ESM-2"
+description = "Compact protein language model implementations implemented with Flax NNX"
 readme = "README.md"
 authors = [
     { name = "Lucas van Dijk", email = "info@lucasvandijk.nl" }
@@ -31,7 +31,7 @@ tpu = [
 ]
 
 [project.scripts]
-jxesm2 = "jxesm2:main"
+flaxseed = "flaxseed:main"
 
 [build-system]
 requires = ["hatchling"]
