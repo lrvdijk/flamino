@@ -1,5 +1,5 @@
 [project]
-name = "flaxseed"
+name = "flamino"
 version = "0.1.0"
 description = "Compact protein language model implementations implemented with Flax NNX"
 readme = "README.md"
@@ -31,7 +31,7 @@ tpu = [
 ]
 
 [project.scripts]
-flaxseed = "flaxseed:main"
+flamino = "flamino:main"
 
 [build-system]
 requires = ["hatchling"]

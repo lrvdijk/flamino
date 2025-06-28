@@ -1,4 +1,4 @@
-from flaxseed.vocab import Alphabet, MASK, UNKNOWN
+from flamino.vocab import Alphabet, MASK, UNKNOWN
 
 
 def test_tokenize():
