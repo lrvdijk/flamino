@@ -32,7 +32,10 @@ def test_relative_encoding():
     ac2 = rope_encoding[0, 2:, :]
     
     # We expect the embeddings to be different, now with position encoded
-    assert jnp.sum(ac1[1] == seqs[0, 1, :]) != jnp.array(d_embed)
+    assert not jnp.all(ac1[1] == seqs[0, 1, :])
+    
+    # Embedding of the same token but at a different position should be different
+    assert not jnp.all(ac1[0] == ac2[0])
     
     # Inner product between two identical tokens should be the same regardless of 
     # their absolute position
