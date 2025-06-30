@@ -2,26 +2,18 @@ import jax
 import jax.numpy as jnp
 from flax import nnx
 
-from flamino.vocab import Alphabet
 from flamino.rope import RoPE
 
 
-def test_relative_encoding():
-    vocab = Alphabet.amino_acids()
-    d_embed = 128
+def test_relative_encoding(mock_embeddings: dict[str, jax.Array]):
     rngs = nnx.Rngs(42)
-    key = jax.random.key(42)
-    
-    mock_embeddings = {
-        token: jax.random.normal(key, (d_embed,))
-        for token in vocab.tokens
-    }
     
     seqs = ["ACAC", "FFGG"]
     seqs = jnp.concatenate([
         jnp.array([mock_embeddings[token] for token in seq])[None, :]  # Add a new axis for batch dimension
         for seq in seqs
     ])
+    d_embed = seqs.shape[-1]
     
     rope = RoPE(d_embed, rngs=rngs)
     rope_encoding = rope(seqs)
