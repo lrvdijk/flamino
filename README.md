@@ -7,6 +7,6 @@
 
 - [x] Tokenization
 - [x] Rotary Position Encodings (RoPE)
-- [ ] RoPE-based multihead attention
-- [ ] Transformer layers
+- [x] RoPE-based multihead attention
+- [x] Transformer layers
 - [ ] Residue-contact prediction head
