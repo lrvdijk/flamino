@@ -1,4 +1,5 @@
-# 🦩 Flamino: a Flax NNX-based reimplementation of ESM-2
+<h1 style="border-bottom: none">🦩 Flamino</h1>
+<h2>A Flax NNX-based reimplementation of ESM-2</h2>
 
 **⚠️ Work in progress**
 
