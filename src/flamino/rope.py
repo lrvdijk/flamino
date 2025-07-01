@@ -5,6 +5,13 @@ Flax NNX-based implementation of the RoPE (Rotary Positional Embeddings) techniq
 import jax
 import jax.numpy as jnp
 from flax import nnx
+from flax.nnx.nn.attention import dot_product_attention
+from flax.nnx.nn import dtypes
+from flax.typing import (
+    Dtype,
+    PrecisionLike,
+    PromoteDtypeFn,
+)
 
 
 def apply_rope(x: jax.Array, sin: jax.Array, cos: jax.Array) -> jax.Array:
@@ -80,3 +87,40 @@ class RoPE(nnx.Module):
         sin_table, cos_table = self._update_cache(x.shape[0])
 
         return apply_rope(x, sin_table, cos_table)
+        
+    def dot_product_attention(
+        self,
+        query: jax.Array,
+        key: jax.Array,
+        value: jax.Array,
+        bias: jax.Array | None = None,
+        mask: jax.Array | None = None,
+        broadcast_dropout: bool = True,
+        dropout_rng: jax.Array | None = None,
+        dropout_rate: float = 0.0,
+        deterministic: bool = False,
+        dtype: Dtype | None = None,
+        precision: PrecisionLike = None,
+        module: nnx.Module | None = None,
+        promote_dtype: PromoteDtypeFn = dtypes.promote_dtype,
+    ):
+        """Drop-in replacement for Flax's dot_product_attention, but with RoPE applied to the query and key."""
+        
+        query = self(query)
+        key = self(key)
+        
+        return dot_product_attention(
+            query, 
+            key, 
+            value, 
+            bias, 
+            mask, 
+            broadcast_dropout, 
+            dropout_rng, 
+            dropout_rate, 
+            deterministic, 
+            dtype, 
+            precision, 
+            module, 
+            promote_dtype
+        )
