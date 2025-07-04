@@ -16,7 +16,8 @@ def test_relative_encoding(mock_embeddings: dict[str, jax.Array]):
     d_embed = seqs.shape[-1]
     
     rope = RoPE(d_embed, rngs=rngs)
-    rope_encoding = rope(seqs)
+    batched_rope = nnx.vmap(rope)
+    rope_encoding = batched_rope(seqs)
     
     assert rope_encoding.shape == (2, seqs.shape[1], d_embed)
     

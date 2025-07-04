@@ -2,11 +2,13 @@
 Transformer implementation with rotary position encoding (RoPE).
 """
 
+from functools import partial
+
 import jax
 import jax.numpy as jnp
 from flax import nnx
 
-from flamino.rope import RoPE
+from flamino.rope import RoPE, dot_product_attention
 
 
 class TransformerEncoder(nnx.Module):
@@ -21,11 +23,12 @@ class TransformerEncoder(nnx.Module):
         self.layer_norm2: nnx.LayerNorm = nnx.LayerNorm(d_embed, rngs=rngs)
         
         self.rope: RoPE = RoPE(d_embed // num_heads, rngs=rngs)
+        attention_fn = partial(dot_product_attention, self.rope)
         
         self.attention: nnx.MultiHeadAttention = nnx.MultiHeadAttention(
             num_heads=num_heads,
             in_features=d_embed,
-            attention_fn=self.rope.dot_product_attention,
+            attention_fn=attention_fn,
             decode=False,
             rngs=rngs
         )
