@@ -1,21 +1,21 @@
 import jax
 import pytest
 
-from flamino.vocab import Alphabet
+from flamino import vocab
 
 
 @pytest.fixture
-def amino_acid_alphabet() -> Alphabet:
-    return Alphabet.amino_acids()
+def esm2_alphabet() -> vocab.Alphabet:
+    return vocab.ESM2
 
 
 @pytest.fixture
-def mock_embeddings(amino_acid_alphabet: Alphabet) -> dict[str, jax.Array]:
+def mock_embeddings(esm2_alphabet: vocab.Alphabet) -> dict[str, jax.Array]:
     d_embed = 64
     key = jax.random.key(42)
 
     mock_embeddings: dict[str, jax.Array] = {}
-    for token in amino_acid_alphabet.tokens:
+    for token in esm2_alphabet.tokens:
         new_key, subkey = jax.random.split(key)
         del key
         
