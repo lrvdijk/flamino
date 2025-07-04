@@ -9,4 +9,7 @@
 - [x] Rotary Position Encodings (RoPE)
 - [x] RoPE-based multihead attention
 - [x] Transformer layers
-- [ ] Residue-contact prediction head
+- [ ] ESM-2 model
+- [ ] Training loop
+- [ ] Residue-residue contact prediction head
+- [ ] Residue-residue contact prediction validation
