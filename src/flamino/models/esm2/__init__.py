@@ -1,7 +1,7 @@
 import jax
 from flax import nnx
 
-from flamino.rope import RoPE
+from flamino.rope import Frequencies, RoPE
 from flamino.transformer import TransformerEncoder
 from flamino.vocab import Alphabet
 
@@ -38,13 +38,15 @@ class ESM2(nnx.Module):
         # Token -> initial embedding
         self.embed: nnx.Embed = nnx.Embed(len(alphabet.tokens), d_embed, rngs=rngs)
         self.rope: RoPE = RoPE(d_embed // num_heads)
-
+        
         # BERT-style transformer layers with rotary positional encoding embeddings
-        # Split RNG generator #layers, and use vmap to generate each layer
+        # Split RNG generator #layers, and use vmap to generate each layer.
+        # We don't need to batch on RoPE frequencies so exclude those.
+        state_axes = nnx.StateAxes({Frequencies: None, ...: 0})
         @nnx.split_rngs(splits=num_layers)
-        @nnx.vmap(in_axes=(None, 0), out_axes=0)
+        @nnx.vmap(in_axes=(None, 0), out_axes=state_axes)
         def create_layers(rope: RoPE, rngs: nnx.Rngs):
-            return TransformerEncoder(d_embed, d_embed * 4, num_heads, rope, rngs=rngs)
+            return TransformerEncoder(d_embed, d_embed * 4, num_heads, rope=rope, rngs=rngs)
             
 
         self.transformer_layers: TransformerEncoder = create_layers(self.rope, rngs)
@@ -57,7 +59,8 @@ class ESM2(nnx.Module):
         x = self.embed(tokens)
 
         # Use nnx.scan to repeatedly apply each transformer layer
-        @nnx.scan(in_axes=(0, nnx.Carry), out_axes=nnx.Carry)
+        state_axes = nnx.StateAxes({Frequencies: None, ...: 0})
+        @nnx.scan(in_axes=(state_axes, nnx.Carry), out_axes=nnx.Carry)
         def apply_transformer_layer(layer: TransformerEncoder, x: jax.Array):
             return layer(x)
 

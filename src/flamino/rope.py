@@ -5,13 +5,7 @@ Flax NNX-based implementation of the RoPE (Rotary Positional Embeddings) techniq
 import jax
 import jax.numpy as jnp
 from flax import nnx
-from flax.nnx.nn.attention import dot_product_attention as nnx_dot_product_attention
-from flax.nnx.nn import dtypes
-from flax.typing import (
-    Dtype,
-    PrecisionLike,
-    PromoteDtypeFn,
-)
+from flax.typing import Dtype
 
 
 rope_sin_cos_table_cache: dict[tuple[int, Dtype], tuple[jax.Array, jax.Array]] = {}
@@ -87,45 +81,3 @@ class RoPE(nnx.Module):
                 rope_sin_cos_table_cache[cache_key] = (sin_table, cos_table)
 
         return apply_rope(x, sin_table, cos_table)
-
-
-def rope_dot_product_attention(
-    rope_module: RoPE,
-    query: jax.Array,
-    key: jax.Array,
-    value: jax.Array,
-    bias: jax.Array | None = None,
-    mask: jax.Array | None = None,
-    broadcast_dropout: bool = True,
-    dropout_rng: jax.Array | None = None,
-    dropout_rate: float = 0.0,
-    deterministic: bool = False,
-    dtype: Dtype | None = None,
-    precision: PrecisionLike = None,
-    module: nnx.Module | None = None,
-    promote_dtype: PromoteDtypeFn = dtypes.promote_dtype,
-):
-    """Drop-in replacement for Flax's dot_product_attention, but with RoPE applied to the query and key."""
-    
-    @nnx.vmap(in_axes=(None, 0), out_axes=0)
-    def batch_apply_rope(rope: RoPE, x: jax.Array):
-        return rope(x)
-
-    query = batch_apply_rope(rope_module, query)
-    key = batch_apply_rope(rope_module, key)
-
-    return nnx_dot_product_attention(
-        query,
-        key,
-        value,
-        bias,
-        mask,
-        broadcast_dropout,
-        dropout_rng,
-        dropout_rate,
-        deterministic,
-        dtype,
-        precision,
-        module,
-        promote_dtype
-    )

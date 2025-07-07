@@ -5,9 +5,10 @@ from flax import nnx
 from flamino.models.esm2 import ESM2
 from flamino.vocab import Alphabet
 
+
 def test_esm2(esm2_alphabet: Alphabet):
     rngs = nnx.Rngs(0)
-    model = ESM2(esm2_alphabet, 8, 64, 8, rngs=rngs)
+    model = ESM2(esm2_alphabet, 8, 128, 4, rngs=rngs)
     
     
     # NNX's MultiHeadAttention stores the attention weights as an `nnx.Intermediate` variable,
