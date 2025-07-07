@@ -6,8 +6,6 @@ from flamino.rope import RoPE
 
 
 def test_relative_encoding(mock_embeddings: dict[str, jax.Array]):
-    rngs = nnx.Rngs(42)
-    
     seqs = ["ACAC", "FFGG"]
     seqs = jnp.concatenate([
         jnp.array([mock_embeddings[token] for token in seq])[None, :]  # Add a new axis for batch dimension
@@ -15,7 +13,7 @@ def test_relative_encoding(mock_embeddings: dict[str, jax.Array]):
     ])
     d_embed = seqs.shape[-1]
     
-    rope = RoPE(d_embed, rngs=rngs)
+    rope = RoPE(d_embed)
     batched_rope = nnx.vmap(rope)
     rope_encoding = batched_rope(seqs)
     
