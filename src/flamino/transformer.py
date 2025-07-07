@@ -8,7 +8,7 @@ import jax
 import jax.numpy as jnp
 from flax import nnx
 
-from flamino.rope import RoPE, dot_product_attention
+from flamino.rope import RoPE, rope_dot_product_attention
 
 
 class TransformerEncoder(nnx.Module):
@@ -16,14 +16,16 @@ class TransformerEncoder(nnx.Module):
     A single transformer encoder block with rotary position encoding (RoPE).
     """
     
-    def __init__(self, d_embed: int, hidden_size: int, num_heads: int, *, rngs: nnx.Rngs) -> None:
+    def __init__(self, d_embed: int, hidden_size: int, num_heads: int, rope: RoPE | None = None, *, rngs: nnx.Rngs) -> None:
         assert d_embed % num_heads == 0, "Embedding dimension must be divisible by number of heads"
         
         self.layer_norm1: nnx.LayerNorm = nnx.LayerNorm(d_embed, rngs=rngs)
         self.layer_norm2: nnx.LayerNorm = nnx.LayerNorm(d_embed, rngs=rngs)
         
-        self.rope: RoPE = RoPE(d_embed // num_heads, rngs=rngs)
-        attention_fn = partial(dot_product_attention, self.rope)
+        if rope:
+            attention_fn = partial(rope_dot_product_attention, rope)
+        else:
+            attention_fn = nnx.dot_product_attention
         
         self.attention: nnx.MultiHeadAttention = nnx.MultiHeadAttention(
             num_heads=num_heads,

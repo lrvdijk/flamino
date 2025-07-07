@@ -13,7 +13,7 @@ def test_transformer_init(mock_embeddings: dict[str, jax.Array]):
     transformer = TransformerEncoder(
         d_embed,
         d_embed * 4,
-        16,
+        4,
         rngs=rngs,
     )
 
