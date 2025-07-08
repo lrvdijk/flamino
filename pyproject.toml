@@ -1,7 +1,7 @@
 [project]
 name = "flamino"
 version = "0.1.0"
-description = "Compact protein language model implementations implemented with Flax NNX"
+description = "Protein language model implementations implemented with Flax NNX"
 readme = "README.md"
 authors = [
     { name = "Lucas van Dijk", email = "info@lucasvandijk.nl" }
@@ -39,6 +39,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "ipykernel>=6.29.5",
     "pytest>=8.4.1",
 ]
 
