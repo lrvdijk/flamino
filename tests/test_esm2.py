@@ -22,8 +22,5 @@ def test_esm2(esm2_alphabet: Alphabet):
     seq = jnp.array(esm2_alphabet.tokenize_to_arr("AAFGG"))  # (batch, sequence)
     logits = forward(model, seq)
     
-    print(logits)
-    print(logits.shape)
-    
     assert logits.shape == (1, 7, 32)  # (1 seq, seq len + 2, alphabet size)
     
