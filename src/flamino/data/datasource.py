@@ -5,12 +5,17 @@ and indexed with `samtools faidx`.
 """
 
 from pathlib import Path
+from collections.abc import Sequence
+from typing import SupportsIndex
 
-import pysam
+from typing_extensions import override
 from intervaltree import IntervalTree
 
+import pysam
+import grain
 
-class FastaDataSource:
+
+class FastaDataSource(grain.sources.RandomAccessDataSource[str]):
     """
     Reads records from one or more FASTA files.
     
@@ -18,7 +23,7 @@ class FastaDataSource:
     bgzipped and indexed with `samtools faidx`.
     """
     
-    def __init__(self, fasta_files: list[str | Path]) -> None:
+    def __init__(self, fasta_files: Sequence[str | Path]) -> None:
         self.fasta_files: list[str] = [
             str(f) for f in fasta_files
         ]
@@ -37,6 +42,7 @@ class FastaDataSource:
         
         self.num_sequences: int = sum(self.num_seq_per_file)
         
+    @override
     def __len__(self) -> int:
         return self.num_sequences
         
@@ -51,7 +57,9 @@ class FastaDataSource:
             if fasta is not None and not fasta.closed:
                 fasta.close()
     
-    def __getitem__(self, ix: int) -> str:
+    @override
+    def __getitem__(self, ix: SupportsIndex) -> str:
+        ix = ix.__index__()
         if not 0 <= ix < self.num_sequences:
             raise IndexError(f"Index {ix} out of range")
         
