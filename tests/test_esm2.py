@@ -3,10 +3,10 @@ import jax.numpy as jnp
 from flax import nnx
 
 from flamino.models.esm2 import ESM2
-from flamino.vocab import Alphabet
+from flamino.vocab import Vocabulary
 
 
-def test_esm2(esm2_alphabet: Alphabet):
+def test_esm2(esm2_alphabet: Vocabulary):
     rngs = nnx.Rngs(0)
     model = ESM2(esm2_alphabet, 8, 128, 4, rngs=rngs)
     
@@ -20,7 +20,8 @@ def test_esm2(esm2_alphabet: Alphabet):
     
     
     seq = jnp.array(esm2_alphabet.tokenize_to_arr("AAFGG"))  # (batch, sequence)
-    logits = forward(model, seq)
+    model_out = forward(model, seq)
     
-    assert logits.shape == (1, 7, 32)  # (1 seq, seq len + 2, alphabet size)
+    assert model_out["logits"].shape == (1, 7, 32)  # (1 seq, seq len + 2, alphabet size)
+    assert model_out["embeddings"].shape == (1, 7, 128)  # (1 seq, seq len + 2, embedding size)
     

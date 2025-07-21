@@ -5,12 +5,12 @@ from flamino import vocab
 
 
 @pytest.fixture
-def esm2_alphabet() -> vocab.Alphabet:
+def esm2_alphabet() -> vocab.Vocabulary:
     return vocab.ESM2
 
 
 @pytest.fixture
-def mock_embeddings(esm2_alphabet: vocab.Alphabet) -> dict[str, jax.Array]:
+def mock_embeddings(esm2_alphabet: vocab.Vocabulary) -> dict[str, jax.Array]:
     d_embed = 64
     key = jax.random.key(42)
 

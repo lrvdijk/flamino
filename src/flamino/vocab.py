@@ -14,7 +14,7 @@ UNKNOWN = "<unk>"
 MASK = "<mask>"
 
 
-class Alphabet:
+class Vocabulary:
     """
     Represents the vocabulary of a language model.
     
@@ -36,7 +36,7 @@ class Alphabet:
         self.longest_special_token: int = max(len(token) for token in self.tokens if token.startswith("<") and token.endswith(">"))
         
     @classmethod
-    def from_str(cls, string: str) -> "Alphabet":
+    def from_str(cls, string: str) -> "Vocabulary":
         return cls([
             START_OF_SEQ,
             END_OF_SEQ,
@@ -155,7 +155,7 @@ class Alphabet:
         
         
 # Ensure token indices match those of the original ESM-2
-ESM2 = Alphabet([
+ESM2 = Vocabulary([
     START_OF_SEQ,
     PADDING,
     END_OF_SEQ,
@@ -189,3 +189,16 @@ ESM2 = Alphabet([
     "-",
     MASK,
 ])
+
+
+KNOWN_VOCABS = {
+    "ESM2": ESM2
+}
+
+
+def get_vocab_from_str(vocab: str) -> Vocabulary:
+    """
+    Obtain the vocabulary instance for a known, pre-defined token vocabulary
+    """
+
+    return KNOWN_VOCABS[vocab]

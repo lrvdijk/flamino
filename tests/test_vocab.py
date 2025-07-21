@@ -1,7 +1,7 @@
 from flamino import vocab
 
 
-def test_tokenize(esm2_alphabet: vocab.Alphabet):
+def test_tokenize(esm2_alphabet: vocab.Vocabulary):
     token_strings = list(map(esm2_alphabet.tok_to_str, esm2_alphabet.tokenize("ACDEFGHIKLMNPQRSTVWY")))
     assert token_strings == [
         "A", "C", "D", "E", "F", "G", "H", "I", "K", "L", 
@@ -19,7 +19,7 @@ def test_tokenize(esm2_alphabet: vocab.Alphabet):
     assert esm2_alphabet.tok_to_str(esm2_alphabet.mask) == vocab.MASK
     
     
-def test_tokenize_to_arr(esm2_alphabet: vocab.Alphabet):
+def test_tokenize_to_arr(esm2_alphabet: vocab.Vocabulary):
     texts = [
         "ACDEFGHIKLMNPQRSTVWY",
         "ACDF<mask>DGDG",

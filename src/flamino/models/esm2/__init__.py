@@ -3,7 +3,7 @@ from flax import nnx
 
 from flamino.rope import Frequencies, RoPE
 from flamino.transformer import TransformerEncoder
-from flamino.vocab import Alphabet
+from flamino.vocab import Vocabulary
 
 
 class LogitHead(nnx.Module):
@@ -26,9 +26,13 @@ class LogitHead(nnx.Module):
 
 
 class ESM2(nnx.Module):
+    """
+    Implementation of the ESM2 model.
+    """
+    
     def __init__(
         self,
-        alphabet: Alphabet,
+        alphabet: Vocabulary,
         num_layers: int = 33,
         d_embed: int = 1024,
         num_heads: int = 16,
@@ -69,4 +73,7 @@ class ESM2(nnx.Module):
         x = self.layer_norm_after(x)
         logits = self.logit_head(x)
 
-        return logits
+        return {
+            "logits": logits,
+            "embeddings": x,
+        }
