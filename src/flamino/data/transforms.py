@@ -63,14 +63,13 @@ class MaskTransform(transforms.RandomMap):
         except AttributeError:
             raise ValueError("Vocabulary must have a mask token")
 
-
     @override
     def random_map(self, element: np.ndarray, rng: np.random.Generator) -> dict[str, np.ndarray]:
-        num_masked = int(len(element) * self.mask_prob)
-
         # Exclude start and end tokens from masking
         excl = (element == self.vocab.start) | (element == self.vocab.end)
-        possible_ix = np.arange(len(element))[excl]
+
+        possible_ix = np.arange(len(element))[~excl]
+        num_masked = int(len(possible_ix) * self.mask_prob)
         mask_ix = rng.choice(possible_ix, num_masked, replace=False)
 
         masked = np.copy(element)
