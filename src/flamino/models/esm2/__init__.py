@@ -32,7 +32,7 @@ class ESM2(nnx.Module):
     
     def __init__(
         self,
-        alphabet: Vocabulary,
+        vocabulary: Vocabulary,
         num_layers: int = 33,
         d_embed: int = 1024,
         num_heads: int = 16,
@@ -40,7 +40,7 @@ class ESM2(nnx.Module):
         rngs: nnx.Rngs
     ):
         # Token -> initial embedding
-        self.embed: nnx.Embed = nnx.Embed(len(alphabet.tokens), d_embed, rngs=rngs)
+        self.embed: nnx.Embed = nnx.Embed(len(vocabulary.tokens), d_embed, rngs=rngs)
         self.rope: RoPE = RoPE(d_embed // num_heads)
         
         # BERT-style transformer layers with rotary positional encoding embeddings
@@ -56,7 +56,7 @@ class ESM2(nnx.Module):
         self.transformer_layers: TransformerEncoder = create_layers(self.rope, rngs)
         self.layer_norm_after: nnx.LayerNorm = nnx.LayerNorm(d_embed, rngs=rngs)
 
-        self.logit_head: LogitHead = LogitHead(d_embed, len(alphabet.tokens), rngs=rngs)
+        self.logit_head: LogitHead = LogitHead(d_embed, len(vocabulary.tokens), rngs=rngs)
 
     def __call__(self, tokens: jax.Array):
         # Token -> initial embedding
