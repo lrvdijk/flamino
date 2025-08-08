@@ -40,3 +40,45 @@ uv sync
 uv run ipython kernel install --user --env VIRTUAL_ENV $(pwd)/.venv --name=flamino
 uv run --with jupyter jupyter lab
 ```
+
+## Usage
+
+### Dataset management
+
+Flamino expects data to be stored in Parquet files. We provide a CLI tool to convert one or more
+FASTA/FASTQ files to (chunked) Parquet files:
+
+```bash
+flamino data convert -c 1000000 -o output_dataset f1.fasta f2.fasta f3.fasta
+```
+
+The `-c` enables dataset chunking, storing at most the specified number of records per file. The output dataset thus
+comprises multiple Parquet files, prefixed by the given output prefix with `-o`:
+
+```
+output_dataset.1.parquet
+output_dataset.2.parquet
+output_dataset.3.parquet
+...
+```
+
+### Training a model
+
+To train a model from scratch, Flamino provides a CLI tool to train any of the included models:
+
+```bash
+flamino train -c train_conf.toml -m model_conf.toml data_conf.toml 
+```
+
+The training configuration file configures the optimizer, the number of epochs, batch size, and more. The model
+configuration file configures the model to train, for example, number of layers, embedding dimensionality, etc. The
+data configuration file species the list of files to read and the vocabulary for tokenizing sequences. Each
+configuration file is further explained below.
+
+
+## Training and model configuration
+
+TODO
+
+
+
