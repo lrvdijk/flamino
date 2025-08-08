@@ -1,0 +1,4 @@
+name = "ESM2"
+num_layers = 6
+d_embed = 512
+num_heads = 8
