@@ -8,11 +8,12 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "click>=8.2.1",
     "flax>=0.10.6",
     "grain>=0.2.11",
-    "intervaltree>=3.1.0",
     "jax>=0.6",
     "optax>=0.2.4",
+    "pyarrow>=21.0.0",
     "pydantic>=2.11.7",
     "pysam>=0.23.3",
     "typing-extensions>=4.14.0",
@@ -36,7 +37,7 @@ tpu = [
 ]
 
 [project.scripts]
-flamino = "flamino:main"
+flamino = "flamino.cli.__main__:flamino"
 
 [build-system]
 requires = ["hatchling"]
